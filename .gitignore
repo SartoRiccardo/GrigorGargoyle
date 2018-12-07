@@ -1,0 +1,4 @@
+# PyCharm Stuff
+.DS_Store
+objects/__pycache__
+img/.DS_Store
