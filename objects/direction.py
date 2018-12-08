@@ -1,6 +1,7 @@
 """
 An object dedicated to reporting where an Entity is going.
 """
+from asyncio import Lock
 
 
 class Direction:
@@ -57,33 +58,36 @@ class Direction:
                 self.isGoing(direction):
             return
 
-        if direction == Direction.UP and self.isGoing(Direction.DOWN):
-            self.__instance /= Direction.DOWN
-        elif direction == Direction.DOWN and self.isGoing(Direction.UP):
-            self.__instance /= Direction.UP
+        if direction == Direction.DOWN and self.isGoing(Direction.UP):
+            self.__instance *= Direction.DOWN / Direction.UP
+        elif direction == Direction.UP and self.isGoing(Direction.DOWN):
+            self.__instance *= Direction.UP / Direction.DOWN
         elif direction == Direction.LEFT and self.isGoing(Direction.RIGHT):
-            self.__instance /= Direction.RIGHT
+            self.__instance *= Direction.LEFT / Direction.RIGHT
         elif direction == Direction.RIGHT and self.isGoing(Direction.LEFT):
-            self.__instance /= Direction.LEFT
+            self.__instance *= Direction.RIGHT / Direction.LEFT
         else:
             self.__instance *= direction
 
         if self.__instance not in self.__DIRECTIONS:
-            self.__instance = Direction.STILL
+            print(f"{self.__instance} somehow happened")
+            self.__instance /= direction
 
     def goBack(self, direction):
         """
         Stop going towards the given direction. Only UP, DOWN, LEFT and RIGHT are value parameters.
         :param direction: The old direction
         """
-        if direction not in self.__AXIS or direction == self.STILL:
+        if direction not in self.__AXIS or \
+                direction == self.STILL or \
+                not self.isGoing(direction):
             return
 
-        if self.isGoing(direction):
-            self.__instance /= direction
+        self.__instance /= direction
 
         if self.__instance not in self.__DIRECTIONS:
-            self.__instance = Direction.STILL
+            print(f"{self.__instance} somehow happened")
+            self.__instance /= direction
 
     # Getters
 

@@ -8,18 +8,21 @@ from objects.direction import Direction
 
 class Entity:
 
-    def __init__(self, canvas: tk.Canvas, sprite: str, x=0, y=0):
+    def __init__(self, canvas: tk.Canvas, sprite: str, x=0, y=0, can_exit_frame=True):
         self._canvas = canvas
 
         self._sprite = tk.PhotoImage(file=sprite)
-        self._id = canvas.create_image(x, y, image=self._sprite, anchor=tk.NW)
-
         self._hitbox = Hitbox(x, y, self._sprite.width(), self._sprite.height())
+
+#        self._hitbox.display(self._canvas)
+        self._id = canvas.create_image(x, y, image=self._sprite, anchor=tk.NW)
 
         self._direction = Direction()
 
         self._x = x
         self._y = y
+
+        self._can_exit_frame = can_exit_frame
 
     def move(self, amount):
         """
@@ -43,6 +46,16 @@ class Entity:
             amount_y += amount
 
         self._x += amount_x
+        if (0 > self._x or self._x + self._sprite.width() > int(self._canvas["width"])) and \
+                not self._can_exit_frame:
+            self._x -= amount_x
+            amount_x = 0
         self._y += amount_y
+        if 0 > self._y or self._y + self._sprite.height() > int(self._canvas["height"]) and \
+                not self._can_exit_frame:
+            self._y -= amount_y
+            amount_y = 0
+
         self._canvas.move(self._id, amount_x, amount_y)
+        self._hitbox.move(amount_x, amount_y)
         self._canvas.update()

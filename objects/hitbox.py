@@ -6,10 +6,6 @@ from random import randint
 
 
 class Hitbox:
-
-    X_AXIS = 0
-    Y_AXIS = 1
-
     def __init__(self, x, y, width, height):
         self.__width = abs(width)
         self.__height = abs(height)
@@ -17,7 +13,7 @@ class Hitbox:
         self.__y = y
 
         self.__canvas = None
-        self.__visual = None
+        self.__id = None
 
     def collidesWith(self, hitbox):
         """
@@ -34,16 +30,17 @@ class Hitbox:
 
         return not x_doesnt_collide and not y_doesnt_collide
 
-    def move(self, amount: int, direction=X_AXIS):
+    def move(self, x=0, y=0):
         """
         Moves the hitbox
-        :param amount: the amount of pixels you want to move the hitbox
-        :param direction: the direction you want to move the hitbox
+        :param x: the amount of pixels to move the hitbox on the X axis
+        :param y: the amount of pixels to move the hitbox on the Y axis
         """
-        if direction == self.X_AXIS:
-            self.__x += amount
-        elif direction == self.Y_AXIS:
-            self.__y -= amount
+        self.__x += x
+        self.__y += y
+
+        if self.__id:
+            self.__canvas.move(self.__id, x, y)
 
     # Setters
 
@@ -83,7 +80,7 @@ class Hitbox:
         colors = ("black", "white", "red", "purple", "blue", "green", "yellow", "magenta")
         if not self.__canvas:
             self.__canvas = canvas
-            self.__visual = canvas.create_polygon(self.__x, self.__y,
+            self.__id = canvas.create_polygon(self.__x, self.__y,
                                                   self.__x + self.__width, self.__y,
                                                   self.__x + self.__width, self.__y + self.__height,
                                                   self.__x, self.__y + self.__height,
@@ -93,10 +90,10 @@ class Hitbox:
         """
         Hides the hitbox if display has been called before
         """
-        if self.__visual:
-            self.__canvas.delete(self.__visual)
+        if self.__id:
+            self.__canvas.delete(self.__id)
             self.__canvas = None
-            self.__visual = None
+            self.__id = None
 
 
 if __name__ == '__main__':

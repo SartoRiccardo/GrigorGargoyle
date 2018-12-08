@@ -13,7 +13,7 @@ class Player(Entity):
     }
 
     def __init__(self, canvas: tk.Canvas):
-        super().__init__(canvas, "img/grigor.png", 0, 0)
+        super().__init__(canvas, "img/grigor.png", 250, 250, can_exit_frame=False)
         self.__speed = 2
 
     def startMoving(self, event):
