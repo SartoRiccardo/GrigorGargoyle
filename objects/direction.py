@@ -119,6 +119,13 @@ class Direction:
         else:
             return self.IS_STILL
 
+    def isStill(self):
+        """
+        Returns whether the direction is going nowhere
+        :return: a boolean
+        """
+        return self.__instance == Direction.STILL
+
     def value(self):
         return self.__instance
 
