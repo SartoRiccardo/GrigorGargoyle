@@ -1,4 +1,4 @@
-# 0.2.0 - 12/??/2018
+# 0.2.0 - 12/11/2018
 ### Added
 + Grigor now shoots with Z.
 + Added the `Projectile` class.
