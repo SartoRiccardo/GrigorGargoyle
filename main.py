@@ -1,12 +1,13 @@
 import tkinter as tk
 from objects.player import Player
-from objects.queue import updates
-
-FPS = 30
+from objects.enemy import Enemy
+from scripts.enemySpawner import EnemySpawner
+import scripts.globalVariables as gVars
 
 
 def mainloop():
-    for u in updates.getQueue():
+    #print(gVars.entities)
+    for u in gVars.updates:
         u()
     canvas.update()
 
@@ -17,7 +18,7 @@ if __name__ == '__main__':
     root.title("Grigor Gargoyle")
     root.resizable(False, False)
 
-    canvas = tk.Canvas(root, width=500, height=500, bg="#EFEFEF", borderwidth=0, highlightthickness=0)
+    canvas = tk.Canvas(root, width=1000, height=750, bg="#EFEFEF", borderwidth=0, highlightthickness=0)
     canvas.focus_set()
     canvas.pack()
 
@@ -25,8 +26,12 @@ if __name__ == '__main__':
     canvas.bind("<KeyPress>", player.action)
     canvas.bind("<KeyRelease>", player.stop)
 
+#    enemy = Enemy(canvas, "img/enemy.png", 300, 300)
+
+    enemy_spawner = EnemySpawner(canvas, 2, 1)
+
     try:
         while True:
             mainloop()
     except tk.TclError as e:  # Closing the window
-        pass
+        enemy_spawner.stop()

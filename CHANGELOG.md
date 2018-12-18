@@ -1,4 +1,18 @@
-# 0.2.0 - 12/11/2018
+# 0.3.0 - 12/18/2018
+### Added
++ There are now Enemies, and they spawn randomly.
+    + `Enemy` class added, and with it `EnemySpawner` too.
+    + Enemy types are now stored in a json file.
+
+### Changed
++ Window is slightly bigger.
++ Technical stuff.
+    + The queue based system is now a bunch of hacky global variable thingy.
+
+### Fixed
++ Projectiles are no longer "ghosts" when they hit themselves.
+
+# [0.2.0](https://github.com/SartoRiccardo/grigorgargoyle/commit/0a9dc24061d9e51a388e04ef7d317055aecf8a19) - 12/11/2018
 ### Added
 + Grigor now shoots with Z.
 + Added the `Projectile` class.

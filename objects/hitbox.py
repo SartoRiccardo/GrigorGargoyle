@@ -77,14 +77,13 @@ class Hitbox:
         Displays the hitbox as a black square in the given canvas
         :param canvas: A Tkinter Canvas object
         """
-        colors = ("black", "white", "red", "purple", "blue", "green", "yellow", "magenta")
         if not self.__canvas:
             self.__canvas = canvas
             self.__id = canvas.create_polygon(self.__x, self.__y,
                                                   self.__x + self.__width, self.__y,
                                                   self.__x + self.__width, self.__y + self.__height,
                                                   self.__x, self.__y + self.__height,
-                                                  fill=colors[randint(0, len(colors)-1)])
+                                                  fill="#222222")
 
     def hide(self):
         """

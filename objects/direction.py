@@ -1,7 +1,6 @@
 """
 An object dedicated to reporting where an Entity is going.
 """
-from asyncio import Lock
 
 
 class Direction:

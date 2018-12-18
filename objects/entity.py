@@ -4,18 +4,19 @@ A generic entity. Superclass of Obstacle, Player, Projectile and Enemy.
 import tkinter as tk
 from objects.hitbox import Hitbox
 from objects.direction import Direction
-from objects.queue import updates
+import scripts.globalVariables as gVars
 
 
 class Entity:
 
-    def __init__(self, canvas: tk.Canvas, sprite: str, x=0, y=0, can_exit_frame=True):
+    def __init__(self, canvas: tk.Canvas, sprite: str, x=0, y=0, can_exit_frame=True,
+                 can_hurt_player=False, is_killable=True, intercepts_projectiles=False):
         self._canvas = canvas
 
         self._sprite = tk.PhotoImage(file=sprite)
         self._hitbox = Hitbox(x, y, self._sprite.width(), self._sprite.height())
-
 #        self._hitbox.display(self._canvas)
+
         self._ID = canvas.create_image(x, y, image=self._sprite, anchor=tk.NW)
 
         self._direction = Direction()
@@ -23,9 +24,18 @@ class Entity:
         self._x = x
         self._y = y
 
+        self._alive = True
+
         self._can_exit_frame = can_exit_frame
 
-        updates.add(self.update)
+        gVars.entities.append(self)
+        gVars.updates.append(self.update)
+        if can_hurt_player:
+            gVars.enemies.append(self)
+        self._is_killable = is_killable
+        self._intercepts_projectiles = intercepts_projectiles
+
+        self._has_entered_frame = not self.isOffScreen()
 
     def move(self, amount):
         """
@@ -63,14 +73,20 @@ class Entity:
         self._hitbox.move(amount_x, amount_y)
 
     def stopUpdating(self):
-        if self.update in updates.getQueue():
-            updates.remove(self.update)
+        if self.update in gVars.updates:
+            gVars.updates.remove(self.update)
 
     def isOffScreen(self):
         return self._x + self._sprite.width() <= 0 or \
                 self._x > int(self._canvas["width"]) or \
                 self._y > int(self._canvas["height"]) or \
                 self._y + self._sprite.height() <= 0
+
+    def collidesWith(self, entity):
+        return self._hitbox.collidesWith(entity.getHitbox())
+
+    def __str__(self):
+        return f"<{type(self)} object x={self._x} y={self._y}>"
 
     # Getters
 
@@ -89,7 +105,31 @@ class Entity:
     def getID(self):
         return self._ID
 
+    def getDirection(self):
+        return self._direction
+
+    def interceptsProjectiles(self):
+        return self._intercepts_projectiles
+
+    def isKillable(self):
+        return self._is_killable
+
+    def isAlive(self):
+        return self._alive
+
     # Overrideable procedures
 
     def update(self):
         pass
+
+    def die(self):
+        self.stopUpdating()
+        self._canvas.delete(self._ID)
+        self._alive = False
+
+        if self in gVars.enemies:
+            gVars.enemies.remove(self)
+        if self in gVars.entities:
+            gVars.entities.remove(self)
+
+        self._hitbox.hide()
